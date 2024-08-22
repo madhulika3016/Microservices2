@@ -9,14 +9,14 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class StudentService1Application {
+public class ApiGatewayDemo1Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(StudentService1Application.class, args);
+		SpringApplication.run(ApiGatewayDemo1Application.class, args);
 	}
 	
 	@Bean
-	//@LoadBalanced
+	@LoadBalanced
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
