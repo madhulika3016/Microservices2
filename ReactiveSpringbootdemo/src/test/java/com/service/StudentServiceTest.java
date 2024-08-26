@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -28,14 +29,80 @@ class StudentServiceTest {
 
 	@Test
 	void testSaveStudent() {
-		Student student = new Student(); 
+	     Student student = new Student(); 
+	        student.setName("John"); 
+	        student.setAge("21"); 
+	        
+	        when(serviceHandler.saveStudent(any())).thenReturn(ServerResponse.ok().bodyValue(student));
+	        
+	        webTestClient.post().uri("/save").contentType(MediaType.APPLICATION_JSON)
+	            .bodyValue(student)
+	            .exchange()
+	            .expectStatus().isOk()
+	            .expectBody(Student.class)
+	            .consumeWith(response -> {
+	                Student actualStudent = response.getResponseBody();
+	                assertEquals(student.getName(), actualStudent.getName());
+	                assertEquals(student.getAge(), actualStudent.getAge());
+	            });
+	    }
+	
+	
+	@Test
+    void testGetAllStudents() { 
+        Student student = new Student(); 
+        student.setId("1234");
+        student.setName("John");
+        student.setAge("21");
+
+        when(serviceHandler.findAll(any())).thenReturn(ServerResponse.ok().bodyValue(student)); 
+        
+        webTestClient.post().uri("/all").contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(student)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(Student.class)
+            .consumeWith(response -> {
+                Student actualStudent = response.getResponseBody();
+                assertEquals(student.getId(), actualStudent.getId());
+                assertEquals(student.getName(), actualStudent.getName());
+                assertEquals(student.getAge(), actualStudent.getAge());
+            });
+    }
+	
+	//@Test
+	 @Disabled
+    public void testupdateStudentById() { 
+        Student student = new Student(); 
+        student.setId("1234"); 
         student.setName("John"); 
         student.setAge("21"); 
-          
-        when(serviceHandler.saveStudent(any())).thenReturn(ServerResponse.ok().bodyValue(student)); 
-        webTestClient.post().uri("/save").contentType(MediaType.APPLICATION_JSON) 
+  
+        when(serviceHandler.updateStudentById(any())).thenReturn(ServerResponse.ok().bodyValue(student)); 
+        webTestClient.post().uri("/update").contentType(MediaType.APPLICATION_JSON) 
         .bodyValue(student).exchange().expectStatus().isOk().expectBody(Student.class) 
         .isEqualTo(student); 
-	}
-
+    }
+	 
+	 @Test
+	    void testDeleteStudentById() { 
+	        Student student = new Student(); 
+	        student.setId("1234"); 
+	  
+	        when(serviceHandler.deleteStudent(any())).thenReturn(ServerResponse.ok().bodyValue(student)); 
+	        
+	        webTestClient.post().uri("/delete").contentType(MediaType.APPLICATION_JSON)
+	            .bodyValue(student)
+	            .exchange()
+	            .expectStatus().isOk()
+	            .expectBody(Student.class)
+	            .consumeWith(response -> {
+	                Student actualStudent = response.getResponseBody();
+	                assertEquals(student.getId(), actualStudent.getId());
+	            });
+	    }
+	 
+	 
 }
+
+

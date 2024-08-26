@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import com.entity.Student;
 import com.repository.StudentRepo;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -49,6 +50,17 @@ public class StudentService {
     public Mono<ServerResponse> findAll(ServerRequest request) {
         return repo.findAll().collectList().flatMap(done -> ServerResponse.ok().bodyValue(done))
                 .onErrorResume(e -> ServerResponse.badRequest().bodyValue("No Data Found"));
+    }
+    
+    public Mono<ServerResponse> findbyname(ServerRequest request) {
+        return request.bodyToMono(Student.class).flatMap(data -> {
+            return repo.findByName(data.getName()).flatMap(done -> {
+                return ServerResponse.ok().bodyValue(done);
+            });
+
+        }).onErrorResume(e -> {
+            return ServerResponse.badRequest().bodyValue("Student Name Not Found");
+        });
     }
 
     public Mono<ServerResponse> deleteStudent(ServerRequest request) {

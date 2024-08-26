@@ -22,7 +22,8 @@ public class RouterConfig {
 	                .andRoute(RequestPredicates.POST("/search"), service::findStudent)
 	                .andRoute(RequestPredicates.POST("/all"), service::findAll)
 	                .andRoute(RequestPredicates.POST("/delete"), service::deleteStudent)
-	                .andRoute(RequestPredicates.POST("/update"),  service::updateStudentById);
+	                .andRoute(RequestPredicates.POST("/update"),  service::updateStudentById)
+	                .andRoute(RequestPredicates.POST("/studentname"),  service::findbyname);
 	    }
 
 }
