@@ -1,12 +1,13 @@
 package com.entity;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-@Document(collection = "students")
+@Document(collection = "student")
 public class Student {
 	
-	@MongoId
+	@Id
 	String id;
 	String name;
 	String age;

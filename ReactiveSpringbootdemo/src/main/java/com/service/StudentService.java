@@ -34,6 +34,17 @@ public class StudentService {
             return ServerResponse.badRequest().bodyValue("Student ID Not Found");
         });
     }
+    
+    public Mono<ServerResponse> updateStudentById(ServerRequest request) { 
+        return request.bodyToMono(Student.class).flatMap(data -> { 
+            return repo.findById(data.getId()).flatMap(change -> { 
+                change.setId(data.getId()); 
+                change.setName(data.getName()); 
+                change.setAge(data.getAge()); 
+                return ServerResponse.ok().body(repo.save(change), Student.class); 
+            }).switchIfEmpty(ServerResponse.ok().bodyValue("No Student Data Found")); 
+        }); 
+    } 
 
     public Mono<ServerResponse> findAll(ServerRequest request) {
         return repo.findAll().collectList().flatMap(done -> ServerResponse.ok().bodyValue(done))
